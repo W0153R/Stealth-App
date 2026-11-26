@@ -160,6 +160,8 @@
     <string name="preference_show_nsfw_summary_redlib">Redlib instance change requires re-verification</string>
     <string name="preference_show_nsfw_preview">Show NSFW preview</string>
     <string name="preference_show_spoiler_preview">Show Spoiler preview</string>
+    <string name="preference_auto_rotate_video">Auto-rotate fullscreen videos</string>
+    <string name="preference_auto_rotate_video_summary">Rotate fullscreen videos to landscape when they are wider than tall</string>
 
     <string name="preference_reddit_source">Reddit Source</string>
     <string name="preference_reddit_source_reddit">Reddit</string>

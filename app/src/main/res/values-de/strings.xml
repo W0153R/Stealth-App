@@ -131,6 +131,8 @@
     <string name="preference_show_nsfw">NSFW-Inhalt anzeigent</string>
     <string name="preference_show_nsfw_preview">NSFW-Vorschau anzeigen</string>
     <string name="preference_show_spoiler_preview">Spoiler-Vorschau anzeigen</string>
+    <string name="preference_auto_rotate_video">Videos im Vollbild automatisch drehen</string>
+    <string name="preference_auto_rotate_video_summary">Videos im Vollbild ins Querformat drehen, wenn sie breiter als hoch sind</string>
 
     <string name="preference_about">Über</string>
 

@@ -205,6 +205,20 @@ class PreferencesRepository @Inject constructor(
         preferencesDatastore.setValue(MediaPreferences.PreferencesKeys.MUTE_VIDEO, muteVideo)
     }
 
+    fun getAutoRotateVideo(defaultValue: Boolean = true): Flow<Boolean> {
+        return preferencesDatastore.getValue(
+            MediaPreferences.PreferencesKeys.AUTO_ROTATE_VIDEO,
+            defaultValue
+        )
+    }
+
+    suspend fun setAutoRotateVideo(autoRotateVideo: Boolean) {
+        preferencesDatastore.setValue(
+            MediaPreferences.PreferencesKeys.AUTO_ROTATE_VIDEO,
+            autoRotateVideo
+        )
+    }
+
     //endregion
 
     //region Policy Disclaimer

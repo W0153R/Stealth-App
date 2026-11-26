@@ -55,7 +55,7 @@
     <dimen name="subscriptions_margin_vertical">@dimen/card_margin_vertical</dimen>
     <dimen name="subscriptions_padding">@dimen/card_padding</dimen>
 
-    <dimen name="preference_card_height">64dp</dimen>
+    <dimen name="preference_card_min_height">64dp</dimen>
     <dimen name="preference_padding">12dp</dimen>
     <dimen name="preference_category_margin_horizontal">16dp</dimen>
     <dimen name="preference_category_margin_vertical">16dp</dimen>

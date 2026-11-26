@@ -1,6 +1,7 @@
 package com.cosmos.unreddit.ui.mediaviewer
 
 import android.Manifest
+import android.content.pm.ActivityInfo
 import android.os.Build
 import android.util.Log
 import android.os.Bundle
@@ -62,6 +63,10 @@ class MediaViewerFragment : FullscreenBottomSheetFragment() {
     // Flag to check if fragment was open from FragmentManager or Navigation
     private var isLegacyNavigation: Boolean = false
 
+    private var originalRequestedOrientation: Int? = null
+    private var autoRotateVideoEnabled: Boolean = true
+    private var currentVideoIsLandscape: Boolean? = null
+
     private lateinit var mediaAdapter: MediaViewerAdapter
     private lateinit var thumbnailAdapter: MediaViewerThumbnailAdapter
 
@@ -104,6 +109,10 @@ class MediaViewerFragment : FullscreenBottomSheetFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        if (savedInstanceState?.containsKey(KEY_ORIGINAL_REQUESTED_ORIENTATION) == true) {
+            originalRequestedOrientation =
+                savedInstanceState.getInt(KEY_ORIGINAL_REQUESTED_ORIENTATION)
+        }
         handleArguments()
     }
 
@@ -180,6 +189,13 @@ class MediaViewerFragment : FullscreenBottomSheetFragment() {
                     binding.textPageCurrent.text = it.plus(1).toString()
                 }
             }
+
+            launch {
+                viewerViewModel.isAutoRotateVideo.collect { enabled ->
+                    autoRotateVideoEnabled = enabled
+                    updateVideoOrientation()
+                }
+            }
         }
     }
 
@@ -215,6 +231,7 @@ class MediaViewerFragment : FullscreenBottomSheetFragment() {
                     RedlibVerificationActivity.intent(requireContext(), instance)
                 )
             },
+            onVideoOrientationChanged = ::setVideoOrientation,
             okHttpClient = teditOkHttpClient
         )
 
@@ -427,6 +444,47 @@ class MediaViewerFragment : FullscreenBottomSheetFragment() {
         }
     }
 
+    private fun setVideoOrientation(isLandscape: Boolean) {
+        currentVideoIsLandscape = isLandscape
+        updateVideoOrientation()
+    }
+
+    private fun updateVideoOrientation() {
+        val hostActivity = activity ?: return
+        if (autoRotateVideoEnabled && currentVideoIsLandscape == true) {
+            if (originalRequestedOrientation == null) {
+                originalRequestedOrientation = hostActivity.requestedOrientation
+            }
+            hostActivity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
+        } else {
+            restoreRequestedOrientation(hostActivity)
+        }
+    }
+
+    private fun restoreRequestedOrientation(
+        hostActivity: android.app.Activity = requireActivity()
+    ) {
+        originalRequestedOrientation?.let {
+            hostActivity.requestedOrientation = it
+            originalRequestedOrientation = null
+        }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        originalRequestedOrientation?.let {
+            outState.putInt(KEY_ORIGINAL_REQUESTED_ORIENTATION, it)
+        }
+        super.onSaveInstanceState(outState)
+    }
+
+    override fun onDestroy() {
+        val hostActivity = activity
+        if (hostActivity != null && !hostActivity.isChangingConfigurations) {
+            restoreRequestedOrientation(hostActivity)
+        }
+        super.onDestroy()
+    }
+
     override fun getTheme(): Int {
         return R.style.ThemeOverlay_App_BottomSheetDialog_MediaViewer
     }
@@ -445,6 +503,8 @@ class MediaViewerFragment : FullscreenBottomSheetFragment() {
         private const val BUNDLE_KEY_LINK = "BUNDLE_KEY_LINK"
         private const val BUNDLE_KEY_TYPE = "BUNDLE_KEY_TYPE"
         private const val BUNDLE_KEY_PERMALINK = "BUNDLE_KEY_PERMALINK"
+        private const val KEY_ORIGINAL_REQUESTED_ORIENTATION =
+            "KEY_ORIGINAL_REQUESTED_ORIENTATION"
 
         fun newInstance(images: List<GalleryMedia>) = MediaViewerFragment().apply {
             arguments = bundleOf(

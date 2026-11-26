@@ -70,6 +70,9 @@ class MediaViewerViewModel
     val isVideoMuted: Flow<Boolean>
         get() = preferencesRepository.getMuteVideo(false)
 
+    val isAutoRotateVideo: Flow<Boolean>
+        get() = preferencesRepository.getAutoRotateVideo()
+
     var hideControls: Boolean = false
 
     init {

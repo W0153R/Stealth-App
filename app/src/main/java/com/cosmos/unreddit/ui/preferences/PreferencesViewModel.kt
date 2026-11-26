@@ -33,6 +33,8 @@ class PreferencesViewModel @Inject constructor(
 
     val showSpoilerPreview: Flow<Boolean> = preferencesRepository.getShowSpoilerPreview()
 
+    val autoRotateVideo: Flow<Boolean> = preferencesRepository.getAutoRotateVideo()
+
     val customUserAgent: SharedFlow<String> = preferencesRepository.getCustomUserAgent()
         .shareIn(viewModelScope, SharingStarted.WhileSubscribed(), 1)
 
@@ -102,6 +104,12 @@ class PreferencesViewModel @Inject constructor(
     fun setShowSpoilerPreview(showSpoilerPreview: Boolean) {
         viewModelScope.launch {
             preferencesRepository.setShowSpoilerPreview(showSpoilerPreview)
+        }
+    }
+
+    fun setAutoRotateVideo(autoRotateVideo: Boolean) {
+        viewModelScope.launch {
+            preferencesRepository.setAutoRotateVideo(autoRotateVideo)
         }
     }
 

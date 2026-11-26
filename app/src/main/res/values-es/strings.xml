@@ -104,6 +104,8 @@
      <string name="preference_show_nsfw">Mostrar contenido NSFW</string>
      <string name="preference_show_nsfw_preview">Mostrar vista previa NSFW</string>
      <string name="preference_show_spoiler_preview">Mostrar vista previa de Spoiler</string>
+     <string name="preference_auto_rotate_video">Girar videos a pantalla completa automáticamente</string>
+     <string name="preference_auto_rotate_video_summary">Girar al modo horizontal los videos a pantalla completa que sean más anchos que altos</string>
      <string name="preference_about">Acerca de</string>
      <string name="fragment_about_label">Acerca de</string>
      <string name="about_section_credits">Créditos</string>

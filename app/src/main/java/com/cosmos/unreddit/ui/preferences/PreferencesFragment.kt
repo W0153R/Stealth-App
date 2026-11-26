@@ -24,6 +24,7 @@ import com.cosmos.unreddit.data.model.preferences.DataPreferences
 import com.cosmos.unreddit.data.model.preferences.DataPreferences.RedditSource.REDDIT
 import com.cosmos.unreddit.data.model.preferences.DataPreferences.RedditSource.REDDIT_SCRAP
 import com.cosmos.unreddit.data.model.preferences.DataPreferences.RedditSource.TEDDIT
+import com.cosmos.unreddit.data.model.preferences.MediaPreferences
 import com.cosmos.unreddit.data.model.preferences.UiPreferences
 import com.cosmos.unreddit.databinding.LayoutPreferenceListBinding
 import com.cosmos.unreddit.ui.policydisclaimer.PolicyDisclaimerDialogFragment
@@ -52,6 +53,7 @@ class PreferencesFragment : PreferenceFragmentCompat() {
     private var showNsfwPreference: SwitchPreferenceCompat? = null
     private var showNsfwPreviewPreference: SwitchPreferenceCompat? = null
     private var showSpoilerPreviewPreference: SwitchPreferenceCompat? = null
+    private var autoRotateVideoPreference: SwitchPreferenceCompat? = null
     private var backupPreference: Preference? = null
     private var sourcePreference: Preference? = null
     private var redditSourceValue: Int = REDDIT.value
@@ -150,6 +152,15 @@ class PreferencesFragment : PreferenceFragmentCompat() {
         )?.apply {
             setOnPreferenceChangeListener { _, newValue ->
                 viewModel.setShowSpoilerPreview(newValue as Boolean)
+                true
+            }
+        }
+
+        autoRotateVideoPreference = findPreference<SwitchPreferenceCompat>(
+            MediaPreferences.PreferencesKeys.AUTO_ROTATE_VIDEO.name
+        )?.apply {
+            setOnPreferenceChangeListener { _, newValue ->
+                viewModel.setAutoRotateVideo(newValue as Boolean)
                 true
             }
         }
@@ -307,6 +318,12 @@ class PreferencesFragment : PreferenceFragmentCompat() {
             launch {
                 viewModel.showSpoilerPreview.collect { showSpoilerPreview ->
                     showSpoilerPreviewPreference?.isChecked = showSpoilerPreview
+                }
+            }
+
+            launch {
+                viewModel.autoRotateVideo.collect { autoRotateVideo ->
+                    autoRotateVideoPreference?.isChecked = autoRotateVideo
                 }
             }
 

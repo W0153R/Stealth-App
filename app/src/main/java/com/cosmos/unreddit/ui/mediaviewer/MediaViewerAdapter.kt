@@ -24,6 +24,7 @@ import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.Tracks
 import com.google.android.exoplayer2.source.MergingMediaSource
 import com.google.android.exoplayer2.upstream.HttpDataSource
+import com.google.android.exoplayer2.video.VideoSize
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.OkHttpClient
 import java.net.HttpURLConnection
@@ -36,6 +37,7 @@ class MediaViewerAdapter(
     private val hasAudio: (Boolean) -> Unit,
     private val onRetry: () -> Unit,
     private val onRedlibChallenge: (String) -> Unit,
+    private val onVideoOrientationChanged: (Boolean) -> Unit,
     okHttpClient: OkHttpClient
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -234,6 +236,24 @@ class MediaViewerAdapter(
             val player = SimpleExoPlayer.Builder(binding.video.context)
                 .setMediaSourceFactory(factory)
                 .build()
+
+            player.addListener(object : Player.Listener {
+                override fun onVideoSizeChanged(videoSize: VideoSize) {
+                    if (videoSize.width <= 0 || videoSize.height <= 0) return
+
+                    val aspectRatio = videoSize.width * videoSize.pixelWidthHeightRatio /
+                        videoSize.height
+                    val displayRatio = if (
+                        videoSize.unappliedRotationDegrees == 90 ||
+                        videoSize.unappliedRotationDegrees == 270
+                    ) {
+                        1f / aspectRatio
+                    } else {
+                        aspectRatio
+                    }
+                    onVideoOrientationChanged(displayRatio > 1f)
+                }
+            })
 
             val videoItem = exoPlayerHelper.getMediaItem(video.url)
 

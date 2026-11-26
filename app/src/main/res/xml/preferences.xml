@@ -37,6 +37,12 @@
             app:title="@string/preference_show_spoiler_preview"
             app:persistent="false"/>
 
+        <SwitchPreferenceCompat
+            app:key="auto_rotate_video"
+            app:title="@string/preference_auto_rotate_video"
+            app:summary="@string/preference_auto_rotate_video_summary"
+            app:persistent="false"/>
+
     </PreferenceCategory>
 
     <PreferenceCategory
